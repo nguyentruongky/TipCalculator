@@ -65,6 +65,12 @@ class TipViewController: UIViewController {
         billAmountTextField.becomeFirstResponder()
         amountViewHeightConstraint.constant = self.view.frame.height - 200
         rotateShowMoreButton(!didPickerShow)
+        
+        if UIScreen.mainScreen().bounds.size.height < 568 {
+            
+            billAmountTextField.font = UIFont.systemFontOfSize(40)
+            totalLabel.font = UIFont.systemFontOfSize(50)
+        }
     }
     
     func setupDefaultValue() {
