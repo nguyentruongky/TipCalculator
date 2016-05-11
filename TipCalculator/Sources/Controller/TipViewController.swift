@@ -75,8 +75,10 @@ class TipViewController: UIViewController {
     
     func setupDefaultValue() {
         
-        defaultPercentButton = percentButtons[SettingStorage.loadDefaultPercentIndex()]
-        tipPercent = 10
+        let defaultPercentIndex = SettingStorage.loadDefaultPercentIndex()
+        defaultPercentButton = percentButtons[defaultPercentIndex]
+        tipPercent = defaultPercentIndex * 5 + 10
+        
         hidePercentPicker()
         showDefaultPercent()
     }
