@@ -16,4 +16,5 @@ Time spent: 6 hours.
 
 ###Demo:
 ![](https://github.com/nguyentruongky/TipCalculator/blob/master/demo.gif)
+
 Gif created with Recordit. 
