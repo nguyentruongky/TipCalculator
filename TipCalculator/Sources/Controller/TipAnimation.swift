@@ -9,96 +9,35 @@
 import UIKit
 
 extension TipViewController {
-    
-    func showTipView() {
-        
-        guard didTipViewShow == false else { return }
-        
-        didTipViewShow = true
-        
-        UIView.animateWithDuration(0.35) {
-            
-            self.amountViewHeightConstraint.constant = 76
-            self.view.layoutIfNeeded()
+    func setTipView(visible: Bool) {
+        let height: CGFloat = visible ? 76 : view.frame.height - 200
+        let opacity: CGFloat = visible ? 1 : 0
+
+        UIView.animate(withDuration: 0.35) { [weak self] in
+            self?.amountViewHeightConstraint.constant = height
+            self?.view.layoutIfNeeded()
         }
-        
-        UIView.animateWithDuration(1) {
-            
-            self.tipView.alpha = 1
-            self.totalView.alpha = 1
+
+        UIView.animate(withDuration: 1) { [weak self] in
+            self?.tipView.alpha = opacity
+            self?.totalView.alpha = opacity
+        }
+    }
+
+    func setPercentPicker(visible: Bool) {
+        setShowMoreButton(visible)
+        UIView.animate(withDuration: 0.35) { [weak self] in
+            self?.optionsViews.alpha = visible ? 1 : 0
+            self?.optionLeftConstraint.constant = visible ? 16 : -84
+            self?.selectedPercentButton.alpha = visible ? 0 : 1
+            self?.view.layoutIfNeeded()
         }
     }
     
-    func hideTipView() {
-        
-        guard didTipViewShow == true else { return }
-        
-        didTipViewShow = false
-        
-        UIView.animateWithDuration(0.35) {
-            
-            self.amountViewHeightConstraint.constant = self.view.frame.height - 200
-            self.view.layoutIfNeeded()
-        }
-        
-        UIView.animateWithDuration(1) {
-            
-            self.tipView.alpha = 0
-            self.totalView.alpha = 0
-        }
-    }
-    
-    func showDefaultPercent() {
-        
-        self.defaultPercentButton.alpha = 1
-    }
-    
-    func hidePercentPicker() {
-        
-        guard didPickerShow == false else { return }
-        rotateShowMoreButton(didPickerShow)
-        didPickerShow = true
-        
-        UIView.animateWithDuration(0.5) {
-            
-            for button in self.percentButtons {
-                button.alpha = 0
-            }
-            self.showDefaultPercent()
-            
-            self.buttonLeftConstraints[0].constant = 16
-            self.buttonLeftConstraints[1].constant = 16
-            self.buttonLeftConstraints[2].constant = 60
-            self.view.layoutIfNeeded()
-        }
-    }
-    
-    func showPercentPicker() {
-        
-        guard didPickerShow == true else { return }
-        rotateShowMoreButton(didPickerShow)
-        didPickerShow = false
-    
-        UIView.animateWithDuration(0.5) { 
-            
-            for button in self.percentButtons {
-                button.alpha = 1
-            }
-            self.showDefaultPercent()
-            
-            self.buttonLeftConstraints[0].constant = self.leftDistance.fifteen
-            self.buttonLeftConstraints[1].constant = self.leftDistance.twenty
-            self.buttonLeftConstraints[2].constant = self.leftDistance.showMore
-            self.view.layoutIfNeeded()
-        }
-    }
-    
-    func rotateShowMoreButton(didShow: Bool) {
-        
-        let angle: CGFloat = didShow ? 0 : CGFloat(M_PI)
-        
-        UIView.animateWithDuration(0.5) { 
-            self.showMoreOptionButton.transform = CGAffineTransformMakeRotation(angle)
+    func setShowMoreButton(_ value: Bool) {
+        let angle: CGFloat = value ? 0 : CGFloat.pi
+        UIView.animate(withDuration: 0.35) { [weak self] in
+            self?.showMoreOptionButton.transform = CGAffineTransform(rotationAngle: angle)
         }   
     }
 }

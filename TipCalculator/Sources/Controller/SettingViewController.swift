@@ -9,21 +9,27 @@
 import UIKit
 
 class SettingViewController: UIViewController {
-
-    var delegate: TipControllerDelegate!
+    static func create() -> SettingViewController{
+        return UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "SettingViewController") as! SettingViewController
+    }
     
-    @IBOutlet weak var defaultPercentSelection: UISegmentedControl!
-    @IBAction func selectDefaultPercent(sender: UISegmentedControl) {
-        
-        let percent = sender.selectedSegmentIndex * 5 + 10
-        SettingStorage.saveDefaultPercentIndex(sender.selectedSegmentIndex)
-        delegate.didSelectDefaultPercent(percent, atIndex: sender.selectedSegmentIndex)
-        self.navigationController?.popViewControllerAnimated(true)
+    weak var delegate: TipControllerDelegate!
+    @IBOutlet weak var options: UISegmentedControl!
+    @IBAction func didSelectPercentage(sender: UISegmentedControl) {
+        let percent = TipLogic.convertIndexToPercentage(sender.selectedSegmentIndex)
+        SettingStorage.defaultPercentage = percent
+        delegate.didSelectPercentage(atIndex: sender.selectedSegmentIndex)
+        navigationController?.popViewController(animated: true)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        loadPercentage()
+    }
 
-        defaultPercentSelection.selectedSegmentIndex = SettingStorage.loadDefaultPercentIndex()
+    func loadPercentage() {
+        let percentage = SettingStorage.defaultPercentage
+        let selectedIndex = TipLogic.convertPercentageToIndex(percentage)
+        options.selectedSegmentIndex = selectedIndex
     }
 }

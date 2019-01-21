@@ -9,29 +9,23 @@
 import UIKit
 
 extension TipViewController: UITextFieldDelegate  {
-    
-    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
-        
-        let newString = NSString(string: textField.text!).stringByReplacingCharactersInRange(range, withString: string)
-        guard newString != "" && Double(newString) != nil else {
-            
-            self.hideTipView()
-            return true
-        }
-        showTipView()
-        calculateMoneyWithBillData(newString)
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange,
+                   replacementString string: String) -> Bool {
+        let newString = (textField.text! as NSString).replacingCharacters(in: range, with: string)
+        let shouldShowTipView = newString.isEmpty == false
+        setTipView(visible: shouldShowTipView)
+        updateAmount(billAmount: newString)
         return true
     }
 }
 
 extension TipViewController: TipControllerDelegate {
-    
-    func didSelectDefaultPercent(percent: Int, atIndex index: Int) {
-        
-        defaultPercentButton.alpha = 0
-        defaultPercentButton = percentButtons[index]
-        showDefaultPercent()
-        tipPercent = percent
-        calculateMoneyWithBillData(billAmountTextField.text!)
+    func didSelectPercentage(atIndex index: Int) {
+        selectedPercentButton.alpha = 0
+        let button = percentButtons[index]
+        selectedPercentButton.setTitle(button.title(for: .normal), for: .normal)
+        selectedPercentButton.alpha = 1
+        tipPercent = TipLogic.convertIndexToPercentage(index)
+        updateAmount(billAmount: amountTextField.text!)
     }
 }

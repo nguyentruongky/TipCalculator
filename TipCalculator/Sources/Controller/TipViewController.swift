@@ -8,26 +8,21 @@
 
 import UIKit
 
-protocol TipControllerDelegate {
- 
-    func didSelectDefaultPercent(percent: Int, atIndex index: Int)
+protocol TipControllerDelegate: class {
+    func didSelectPercentage(atIndex index: Int)
 }
 
 class TipViewController: UIViewController {
-    
-    let leftDistance = (fifteen: CGFloat(63), twenty: CGFloat(110), showMore: CGFloat(160))
-    
     var tipPercent = 0
-    var didTipViewShow = false
     var didPickerShow = false
-    weak var defaultPercentButton : UIButton!
-    
-    @IBOutlet weak var billAmountTextField: UITextField!
+
+    @IBOutlet weak var selectedPercentButton: UIButton!
+    @IBOutlet weak var amountTextField: UITextField!
     @IBOutlet weak var amountViewHeightConstraint: NSLayoutConstraint!
-    
     @IBOutlet var percentButtons: [UIButton]!
-    @IBOutlet var buttonLeftConstraints: [NSLayoutConstraint]!
     @IBOutlet weak var showMoreOptionButton: UIButton!
+    @IBOutlet weak var optionsViews: UIView!
+    @IBOutlet weak var optionLeftConstraint: NSLayoutConstraint!
     
     @IBOutlet weak var tipView: UIView!
     @IBOutlet weak var tipMoneyLabel: UILabel!
@@ -37,85 +32,76 @@ class TipViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
         setupView()
     }
     
     @IBAction func showSetting(sender: AnyObject) {
-        
-        let settingController = self.storyboard?.instantiateViewControllerWithIdentifier("SettingViewController") as! SettingViewController
-        settingController.delegate = self
-        self.navigationController?.pushViewController(settingController, animated: true)
+        let controller = SettingViewController.create()
+        controller.delegate = self
+        navigationController?.pushViewController(controller, animated: true)
     }
     
     func setupView() {
-    
-        billAmountTextField.delegate = self
         prepareUI()
-        setupDefaultValue()
+        getDefaultValue()
         addButtonTarget()
+        setPercentPicker(visible: false)
     }
     
     func prepareUI() {
-        
-        self.tipView.alpha = 0
-        self.totalView.alpha = 0
-        billAmountTextField.placeholder = "$"
-        billAmountTextField.text = ""
-        billAmountTextField.becomeFirstResponder()
-        amountViewHeightConstraint.constant = self.view.frame.height - 200
-        rotateShowMoreButton(!didPickerShow)
-        
-        if UIScreen.mainScreen().bounds.size.height < 568 {
-            
-            billAmountTextField.font = UIFont.systemFontOfSize(40)
-            totalLabel.font = UIFont.systemFontOfSize(50)
+        tipView.alpha = 0
+        totalView.alpha = 0
+        amountTextField.becomeFirstResponder()
+        amountViewHeightConstraint.constant = view.frame.height - 200
+        setShowMoreButton(false)
+        setUIForSmallScreen()
+    }
+
+    func setUIForSmallScreen() {
+        if UIScreen.main.bounds.size.height < 568 {
+            amountTextField.font = UIFont.boldSystemFont(ofSize: 40)
+            totalLabel.font = UIFont.boldSystemFont(ofSize: 50)
         }
     }
     
-    func setupDefaultValue() {
-        
-        let defaultPercentIndex = SettingStorage.loadDefaultPercentIndex()
-        defaultPercentButton = percentButtons[defaultPercentIndex]
-        tipPercent = defaultPercentIndex * 5 + 10
-        
-        hidePercentPicker()
-        showDefaultPercent()
+    func getDefaultValue() {
+        let percent = SettingStorage.defaultPercentage
+        tipPercent = percent
+        selectedPercentButton.setTitle("\(percent)%", for: .normal)
+        selectedPercentButton.alpha = 1
+
+        setPercentPicker(visible: false)
     }
     
     func addButtonTarget() {
-        
-        showMoreOptionButton.addTarget(self, action: #selector(showHidePercentPicker), forControlEvents: UIControlEvents.TouchUpInside)
+        showMoreOptionButton.addTarget(self, action: #selector(showHidePercentPicker), for: UIControl.Event.touchUpInside)
+        selectedPercentButton.addTarget(self, action: #selector(showHidePercentPicker), for: UIControl.Event.touchUpInside)
         
         for button in percentButtons {
-            button.addTarget(self, action: #selector(pickPercentTip(_:)), forControlEvents: UIControlEvents.TouchUpInside)
+            button.addTarget(self, action: #selector(pickPercentage), for: UIControl.Event.touchUpInside)
         }
     }
     
-    func pickPercentTip(sender: UIButton) {
-        defaultPercentButton = sender
-        tipPercent = sender.tag / 10
+    @objc func pickPercentage(sender: UIButton) {
+        let percent = sender.tag / 10
+        selectedPercentButton.setTitle("\(percent)%", for: .normal)
+        tipPercent = percent
         showHidePercentPicker()
-        calculateMoneyWithBillData(billAmountTextField.text!)
+        updateAmount(billAmount: amountTextField.text!)
     }
     
-    func calculateMoneyWithBillData(bill: String) {
-        
-        guard bill != "" else { return }
-        
-        let billAmount = Double(bill)!
-        let tip = TipLogic.calculateTipWithBillAmount(billAmount, tipPercent: tipPercent)
-        self.tipMoneyLabel.text = "$\(tip)"
-        let total = TipLogic.calculateTotalWithBillAmount(billAmount, tip: tip)
-        self.totalLabel.text = "$\(total)"
-    }
-    
-    func showHidePercentPicker() {
-        
-        guard didPickerShow == true else { hidePercentPicker() ; return }
-        showPercentPicker()
-    }
+    func updateAmount(billAmount: String) {
+        guard let billAmount = Double(billAmount) else { return }
 
+        let tip = TipLogic.calculateTip(amount: billAmount, tipPercent: tipPercent)
+        self.tipMoneyLabel.text = "$\(tip)"
+
+        let total = TipLogic.calculateTotal(amount: billAmount, tip: tip)
+        totalLabel.text = "$\(total)"
+    }
     
-    
+    @objc func showHidePercentPicker() {
+        didPickerShow = !didPickerShow
+        setPercentPicker(visible: didPickerShow)
+    }
 }

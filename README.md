@@ -3,7 +3,7 @@ Tip calculator follow the requirement from Coderschool.
 
 Time spent: 6 hours. 
 
-###Completed: 
+### Completed: 
 
 - Tip View Controller: Enter bill amount, calculate the tip amount and total.
 - Tip View Controller: Choose another tip percent in Tip View Controller and recalculate.
@@ -14,7 +14,7 @@ Time spent: 6 hours.
 - Setting View Controller: Remember setting across app restart. 
 - Setting View Controller: Update tip and total amount after change tip default percent. 
 
-###Demo:
+### Demo:
 ![](https://github.com/nguyentruongky/TipCalculator/blob/master/demo.gif)
 
 Gif created with Recordit. 
