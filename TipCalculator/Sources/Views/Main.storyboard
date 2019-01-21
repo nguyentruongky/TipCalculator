@@ -222,7 +222,7 @@
                                     <segment title="20%"/>
                                 </segments>
                                 <connections>
-                                    <action selector="didSelectPercentageWithSender:" destination="fte-Fd-QfW" eventType="valueChanged" id="YAd-V0-ELG"/>
+                                    <action selector="didSelectPercentWithSender:" destination="fte-Fd-QfW" eventType="valueChanged" id="X8E-SM-LzI"/>
                                 </connections>
                             </segmentedControl>
                         </subviews>

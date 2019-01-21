@@ -20,12 +20,12 @@ extension TipViewController: UITextFieldDelegate  {
 }
 
 extension TipViewController: TipControllerDelegate {
-    func didSelectPercentage(atIndex index: Int) {
+    func didSelectPercent(atIndex index: Int) {
         selectedPercentButton.alpha = 0
         let button = percentButtons[index]
         selectedPercentButton.setTitle(button.title(for: .normal), for: .normal)
         selectedPercentButton.alpha = 1
-        tipPercent = TipLogic.convertIndexToPercentage(index)
+        tipPercent = TipLogic.convertIndexToPercent(index)
         updateAmount(billAmount: amountTextField.text!)
     }
 }

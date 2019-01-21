@@ -9,7 +9,7 @@
 import UIKit
 
 protocol TipControllerDelegate: class {
-    func didSelectPercentage(atIndex index: Int)
+    func didSelectPercent(atIndex index: Int)
 }
 
 class TipViewController: UIViewController {
@@ -65,7 +65,7 @@ class TipViewController: UIViewController {
     }
     
     func getDefaultValue() {
-        let percent = SettingStorage.defaultPercentage
+        let percent = SettingStorage.defaultPercent
         tipPercent = percent
         selectedPercentButton.setTitle("\(percent)%", for: .normal)
         selectedPercentButton.alpha = 1
@@ -78,11 +78,11 @@ class TipViewController: UIViewController {
         selectedPercentButton.addTarget(self, action: #selector(showHidePercentPicker), for: UIControl.Event.touchUpInside)
         
         for button in percentButtons {
-            button.addTarget(self, action: #selector(pickPercentage), for: UIControl.Event.touchUpInside)
+            button.addTarget(self, action: #selector(pickPercent), for: UIControl.Event.touchUpInside)
         }
     }
     
-    @objc func pickPercentage(sender: UIButton) {
+    @objc func pickPercent(sender: UIButton) {
         let percent = sender.tag / 10
         selectedPercentButton.setTitle("\(percent)%", for: .normal)
         tipPercent = percent

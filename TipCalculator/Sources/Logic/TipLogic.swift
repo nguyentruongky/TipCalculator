@@ -11,12 +11,12 @@ import Foundation
 let keyDefaultPercent = "defaulPercent"
 
 struct SettingStorage {
-    static var defaultPercentage: Int {
+    static var defaultPercent: Int {
         get {
             return UserDefaults.standard.value(forKeyPath: keyDefaultPercent) as? Int ?? 10
         }
         set {
-            UserDefaults.standard.setValue(defaultPercentage, forKeyPath: keyDefaultPercent)
+            UserDefaults.standard.setValue(defaultPercent, forKeyPath: keyDefaultPercent)
         }
     }
 }
@@ -30,11 +30,11 @@ struct TipLogic {
         return amount + tipAmount
     }
 
-    static func convertIndexToPercentage(_ index: Int) -> Int {
+    static func convertIndexToPercent(_ index: Int) -> Int {
         return index * 5 + 10
     }
 
-    static func convertPercentageToIndex(_ percentage: Int) -> Int {
-        return (percentage - 10) / 5
+    static func convertPercentToIndex(_ percent: Int) -> Int {
+        return (percent - 10) / 5
     }
 }
